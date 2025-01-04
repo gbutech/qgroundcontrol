@@ -84,6 +84,8 @@
 #endif
 #endif
 
+
+
 QGC_LOGGING_CATEGORY(QGCApplicationLog, "qgc.qgcapplication")
 
 // Qml Singleton factories
@@ -304,6 +306,8 @@ void QGCApplication::init()
 #endif
     qmlRegisterType<JoystickConfigController>("QGroundControl.Controllers",        1, 0, "JoystickConfigController");
 
+    qmlRegisterType<EllipseItem>("QGroundControl", 1, 0, "EllipseItem");
+
 
     qmlRegisterSingletonType<ShapeFileHelper>("QGroundControl.ShapeFileHelper", 1, 0, "ShapeFileHelper", shapeFileHelperSingletonFactory);
 
@@ -321,6 +325,45 @@ void QGCApplication::init()
     if (!_runningUnitTests) {
         _initForNormalAppBoot();
     }
+}
+
+
+EllipseItem::EllipseItem(QQuickItem *parent)
+    : QQuickItem(parent)
+{
+    // Make the item visible and capable of painting
+    setFlag(QQuickItem::ItemHasContents, true);
+}
+
+void EllipseItem::paint(QPainter *painter)
+{
+    // Set painter properties (color, brush, etc.)
+    //painter->setBrush(Qt::red);
+
+    // Draw an ellipse centered at (width/2, height/2) with a radius of 30px x 20px
+    //painter->drawEllipse(width() / 2 - 15, height() / 2 - 10, 30, 20);
+}
+
+void EllipseItem::addPosition(QPointF pos)
+{
+    m_positions.append(pos);
+}
+
+Q_INVOKABLE int EllipseItem::count() const
+{
+    return m_positions.size();
+}
+
+Q_INVOKABLE QVariantMap EllipseItem::get(int index) const
+{
+    if (index < 0 || index >= m_positions.size())
+         return QVariantMap(); // Return an empty map if the index is out of bounds
+
+     const QPointF &position = m_positions[index];
+     QVariantMap map;
+     map["x"] = position.x();
+     map["y"] = position.y();
+     return map;
 }
 
 void QGCApplication::_initForNormalAppBoot()
@@ -396,6 +439,21 @@ void QGCApplication::_initForNormalAppBoot()
 
     // Connect links with flag AutoconnectLink
     LinkManager::instance()->startAutoConnectedLinks();
+
+    double latitude = 40.1553279;
+    double longitude = 44.5094510;
+
+    int minLat = -90;
+    int maxLat = 90;
+    int minLon = -180;
+    int maxLon = 180;
+
+    qreal xPos = (longitude - minLon) / (maxLon - minLon);
+    qreal yPos = (maxLat - latitude) / (maxLat - minLat);  // 90 is the max latitude (top of the screen)
+
+    QObject *rootObject = _qmlAppEngine->rootObjects().first();
+    auto ellipseItem = rootObject->findChildren<EllipseItem*>(Qt::FindChildrenRecursively);
+    _ellipseItem = ellipseItem.back();
 }
 
 void QGCApplication::deleteAllSettingsNextBoot(void)

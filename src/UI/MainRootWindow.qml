@@ -871,4 +871,53 @@ ApplicationWindow {
          flightID:                   UTMSPStateStorage.flightID
          anchors.fill:               parent
     }
+
+    EllipseItem {
+        id: ellipse_id
+        visible: true
+        width: parent.width
+        height: parent.height
+        z: 20
+
+        //property real latitude: 40.1553329  
+        //property real longitude: 44.5094501 
+        property var color: "green" 
+        property bool shouldPaint: false 
+        property var ellipseCanvasRef: ellipseCanvas 
+
+        //property int count: 0 
+
+        Canvas {
+            id: ellipseCanvas
+            anchors.fill: parent
+            width: parent.width
+            height: parent.height
+
+            property var color: parent.color 
+            property bool shouldPaint: parent.shouldPaint 
+
+            onPaint: {
+                if (!shouldPaint) return;
+
+                var context = ellipseCanvas.getContext("2d");
+                context.clearRect(0, 0, ellipseCanvas.width, ellipseCanvas.height);
+
+                for (var i = 0; i < ellipse_id.count(); i++) 
+                {
+                    var ellipse = ellipse_id.get(i)
+                    // Convert latitude and longitude to screen coordinates
+                    var xPos = ellipse.x * (ellipseCanvas.width - 400);
+                    var yPos = ellipse.y * (ellipseCanvas.height + 700);  // 90 is the max latitude (top of the screen)
+                    //console.log("Canvas With, Height ", ellipseCanvas.width, ellipseCanvas.height);
+                    //console.log("Ellipse x y ", ellipse.x, ellipse.y);
+
+                    // Draw the ellipse (scaled by the window size)
+                    context.beginPath();
+                    context.ellipse(xPos, yPos, 20, 20, 0, 0, Math.PI * 2); // Example: Draw ellipse with radius 20x20 pixels
+                    context.fillStyle = color;
+                    context.fill();
+                }
+            }
+        }
+    }
 }

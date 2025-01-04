@@ -41,6 +41,26 @@ class QGCApplication;
 
 #define qgcApp() qApp
 
+#include <QQuickItem>
+#include <QPainter>
+
+class EllipseItem : public QQuickItem
+{
+    Q_OBJECT
+
+public:
+    explicit EllipseItem(QQuickItem *parent = nullptr);
+    // Override paint method to draw content
+    virtual void paint(QPainter *painter);
+
+    void addPosition(QPointF pos);
+    Q_INVOKABLE int count() const;
+    Q_INVOKABLE QVariantMap get(int index) const;
+
+private:
+    QVector<QPointF> m_positions;
+};
+
 /**
  * @brief The main application and management class.
  *
@@ -135,6 +155,8 @@ public:
     void init();
     void shutdown();
 
+    EllipseItem* getEllipseItem() {return _ellipseItem;}
+
     // Although public, these methods are internal and should only be called by UnitTest code
     QQmlApplicationEngine* qmlAppEngine() { return _qmlAppEngine; }
 
@@ -201,4 +223,5 @@ private:
 
     /// Unit Test have access to creating and destroying singletons
     friend class UnitTest;
+    EllipseItem* _ellipseItem;
 };

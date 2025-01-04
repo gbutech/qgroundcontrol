@@ -117,6 +117,31 @@ Item {
         return [ topLeftCoord, topRightCoord, bottomRightCoord, bottomLeftCoord  ]
     }
 
+    function myOwnDefaultPolygonVertices() {
+        // Initial polygon is inset to take 2/3rds space
+        var rect = Qt.rect(mapControl.centerViewport.x, mapControl.centerViewport.y, mapControl.centerViewport.width, mapControl.centerViewport.height)
+        rect.x += (rect.width * 0.25) / 2
+        rect.y += (rect.height * 0.25) / 2
+        rect.width *= 0.75
+        rect.height *= 0.75
+
+        var centerCoord =       mapControl.toCoordinate(Qt.point(rect.x + (rect.width / 2), rect.y + (rect.height / 2)),   false /* clipToViewPort */)
+        var topLeftCoord =      mapControl.toCoordinate(Qt.point(rect.x, rect.y),                                          false /* clipToViewPort */)
+        var topRightCoord =     mapControl.toCoordinate(Qt.point(rect.x + rect.width, rect.y),                             false /* clipToViewPort */)
+        var bottomLeftCoord =   mapControl.toCoordinate(Qt.point(rect.x, rect.y + rect.height),                            false /* clipToViewPort */)
+        var bottomRightCoord =  mapControl.toCoordinate(Qt.point(rect.x + rect.width, rect.y + rect.height),               false /* clipToViewPort */)
+
+        // Initial polygon has max width and height of 3000 meters
+        var halfWidthMeters =   Math.min(topLeftCoord.distanceTo(topRightCoord), 3000) / 2
+        var halfHeightMeters =  Math.min(topLeftCoord.distanceTo(bottomLeftCoord), 3000) / 2
+        topLeftCoord =      centerCoord.atDistanceAndAzimuth(halfWidthMeters, -90).atDistanceAndAzimuth(halfHeightMeters, 0)
+        topRightCoord =     centerCoord.atDistanceAndAzimuth(halfWidthMeters, 90).atDistanceAndAzimuth(halfHeightMeters, 0)
+        bottomLeftCoord =   centerCoord.atDistanceAndAzimuth(halfWidthMeters, -90).atDistanceAndAzimuth(halfHeightMeters, 180)
+        bottomRightCoord =  centerCoord.atDistanceAndAzimuth(halfWidthMeters, 90).atDistanceAndAzimuth(halfHeightMeters, 180)
+
+        return [ topLeftCoord, topRightCoord]
+    }
+
     /// Reset polygon back to initial default
     function _resetPolygon() {
         mapPolygon.beginReset()
@@ -125,7 +150,13 @@ Item {
         mapPolygon.endReset()
         _circleMode = false
     }
-
+    function _myOwnPolygon() {
+        mapPolygon.beginReset()
+        mapPolygon.clear()
+        mapPolygon.appendVertices(myOwnDefaultPolygonVertices())
+        mapPolygon.endReset()
+        _circleMode = false
+    }
     function _createCircularPolygon(center, radius) {
         var unboundCenter = center.atDistanceAndAzimuth(0, 0)
         var segments = 16
@@ -141,6 +172,10 @@ Item {
         }
         mapPolygon.endReset()
         _circleMode = true
+    }
+
+    function _myOwnresetCircle() {
+        
     }
 
     /// Reset polygon to a circle which fits within initial polygon
@@ -587,6 +622,14 @@ Item {
             anchors.horizontalCenterOffset: mapControl.centerViewport.left + (mapControl.centerViewport.width / 2)
             y:                              mapControl.centerViewport.top
             availableWidth:                 mapControl.centerViewport.width
+
+           // myown button
+            QGCButton {
+                _horizontalPadding: 0
+                text:               qsTr("Spherical")
+                visible:            true
+                onClicked:          _myOwnPolygon()
+            }
 
             QGCButton {
                 _horizontalPadding: 0

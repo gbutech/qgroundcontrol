@@ -50,6 +50,8 @@ public:
     Q_INVOKABLE void removeVertex(int vertexIndex);
     Q_INVOKABLE void appendVertices(const QVariantList& varCoords);
 
+    Q_INVOKABLE void startSpherical();
+
     void appendVertices(const QList<QGeoCoordinate>& coordinates);
 
     /// Adjust the value for the specified coordinate

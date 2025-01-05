@@ -17,6 +17,9 @@
 
 #include <QtCore/QLineF>
 
+#include <thread>
+#include <QtConcurrent>
+
 QGCMapPolygon::QGCMapPolygon(QObject* parent)
     : QObject               (parent)
     , _dirty                (false)
@@ -39,6 +42,79 @@ QGCMapPolygon::QGCMapPolygon(const QGCMapPolygon& other, QObject* parent)
     *this = other;
 
     _init();
+}
+
+class SphericalSimulator
+{
+public:
+    SphericalSimulator(QGCMapPolygon* = nullptr) {}
+
+    void setStartPosition(double latitude, double longitude)
+    {
+        _startPos.setLatitude(latitude);
+        _startPos.setLongitude(longitude);
+    }
+
+    void setEndPosition(double latitude, double longitude)
+    {
+        _endPos.setLatitude(latitude);
+        _endPos.setLongitude(longitude);
+    }
+
+    QGeoCoordinate getStartPos()
+    {
+        return _startPos;
+    }
+
+    QGeoCoordinate getEndPos()
+    {
+        return _endPos;
+    }
+
+    QGeoCoordinate getFirstPathPos(int i)
+    {
+        assert(i >=0 && i < _firstPath.size());
+        return _firstPath[i];
+    }
+
+    int getFirstPathSize() const
+    {
+        return _firstPath.size();
+    }
+
+    void generateFirstPath(int size)
+    {
+        QGeoCoordinate pos = _startPos;
+        _firstPath.push_back(pos);
+        double delta = 0.0001;
+        for (int i = 0; i < size; ++i)
+        {
+            pos.setLatitude(pos.latitude() + delta);
+            pos.setLongitude(pos.longitude() + delta);
+
+            _firstPath.push_back(pos);
+        }
+    }
+
+private:
+
+    QGeoCoordinate _startPos;
+    QGeoCoordinate _endPos;
+
+    QList<QGeoCoordinate> _firstPath;
+} sim;
+
+void QGCMapPolygon::startSpherical()
+{
+    sim.setStartPosition(40.1553366, 44.5094613);
+    sim.generateFirstPath(10);
+    QTimer::singleShot(1000, [&]() {
+        for (int i = 0; i < sim.getFirstPathSize(); ++i)
+        {
+            appendVertex(sim.getFirstPathPos(i));
+        }
+        qDebug() << "ON timer ";
+    });
 }
 
 void QGCMapPolygon::_init(void)

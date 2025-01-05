@@ -117,31 +117,6 @@ Item {
         return [ topLeftCoord, topRightCoord, bottomRightCoord, bottomLeftCoord  ]
     }
 
-    function myOwnDefaultPolygonVertices() {
-        // Initial polygon is inset to take 2/3rds space
-        var rect = Qt.rect(mapControl.centerViewport.x, mapControl.centerViewport.y, mapControl.centerViewport.width, mapControl.centerViewport.height)
-        rect.x += (rect.width * 0.25) / 2
-        rect.y += (rect.height * 0.25) / 2
-        rect.width *= 0.75
-        rect.height *= 0.75
-
-        var centerCoord =       mapControl.toCoordinate(Qt.point(rect.x + (rect.width / 2), rect.y + (rect.height / 2)),   false /* clipToViewPort */)
-        var topLeftCoord =      mapControl.toCoordinate(Qt.point(rect.x, rect.y),                                          false /* clipToViewPort */)
-        var topRightCoord =     mapControl.toCoordinate(Qt.point(rect.x + rect.width, rect.y),                             false /* clipToViewPort */)
-        var bottomLeftCoord =   mapControl.toCoordinate(Qt.point(rect.x, rect.y + rect.height),                            false /* clipToViewPort */)
-        var bottomRightCoord =  mapControl.toCoordinate(Qt.point(rect.x + rect.width, rect.y + rect.height),               false /* clipToViewPort */)
-
-        // Initial polygon has max width and height of 3000 meters
-        var halfWidthMeters =   Math.min(topLeftCoord.distanceTo(topRightCoord), 3000) / 2
-        var halfHeightMeters =  Math.min(topLeftCoord.distanceTo(bottomLeftCoord), 3000) / 2
-        topLeftCoord =      centerCoord.atDistanceAndAzimuth(halfWidthMeters, -90).atDistanceAndAzimuth(halfHeightMeters, 0)
-        topRightCoord =     centerCoord.atDistanceAndAzimuth(halfWidthMeters, 90).atDistanceAndAzimuth(halfHeightMeters, 0)
-        bottomLeftCoord =   centerCoord.atDistanceAndAzimuth(halfWidthMeters, -90).atDistanceAndAzimuth(halfHeightMeters, 180)
-        bottomRightCoord =  centerCoord.atDistanceAndAzimuth(halfWidthMeters, 90).atDistanceAndAzimuth(halfHeightMeters, 180)
-
-        return [ topLeftCoord, topRightCoord]
-    }
-
     /// Reset polygon back to initial default
     function _resetPolygon() {
         mapPolygon.beginReset()
@@ -151,13 +126,12 @@ Item {
         _circleMode = false
     }
     function _myOwnPolygon() {
-        mapPolygon.beginReset()
-        mapPolygon.clear()
-        mapPolygon.appendVertices(myOwnDefaultPolygonVertices())
-        mapPolygon.endReset()
+        mapPolygon.startSpherical();
         _circleMode = false
     }
     function _createCircularPolygon(center, radius) {
+        //Mamikon
+        /*
         var unboundCenter = center.atDistanceAndAzimuth(0, 0)
         var segments = 16
         var angleIncrement = 360 / segments
@@ -172,6 +146,7 @@ Item {
         }
         mapPolygon.endReset()
         _circleMode = true
+        */
     }
 
     function _myOwnresetCircle() {
@@ -322,7 +297,8 @@ Item {
             opacity:        interiorOpacity
             border.color:   borderColor
             border.width:   borderWidth
-            path:           mapPolygon.path
+            //Mamikon
+            //path:           mapPolygon.path
         }
     }
 
@@ -330,6 +306,8 @@ Item {
         id: edgeLengthHandleComponent
 
         MapQuickItem {
+            //Mamikon
+            /*
             id:             mapQuickItem
             anchorPoint.x:  sourceItem.width / 2
             anchorPoint.y:  sourceItem.height / 2
@@ -345,6 +323,7 @@ Item {
                         _unitsConversion.appSettingsHorizontalDistanceUnitsString
               color:    "white"
             }
+            */
         }
     }
 
@@ -407,6 +386,8 @@ Item {
         id: splitHandlesComponent
 
         Repeater {
+            //Mamikon
+            /*
             model: mapPolygon.path
 
             delegate: Item {
@@ -436,6 +417,7 @@ Item {
                     }
                 }
             }
+            */
         }
     }
 
@@ -471,6 +453,8 @@ Item {
     Component {
         id: centerDragHandle
         MapQuickItem {
+            //Mamikon
+            /*
             id:             mapQuickItem
             anchorPoint.x:  dragHandle.width  * 0.5
             anchorPoint.y:  dragHandle.height * 0.5
@@ -494,6 +478,7 @@ Item {
                     anchors.centerIn:   parent
                 }
             }
+            */
         }
     }
 
@@ -511,10 +496,12 @@ Item {
 
             sourceItem: Rectangle {
                 id:             dragHandle
-                width:          ScreenTools.defaultFontPixelHeight * 1.5
+                //Mamikon
+                width:          ScreenTools.defaultFontPixelHeight
+                //width:          ScreenTools.defaultFontPixelHeight * 1.5
                 height:         width
                 radius:         width * 0.5
-                color:          Qt.rgba(1,1,1,0.8)
+                color:          Qt.rgba(0,0,1,0.8)
                 border.color:   Qt.rgba(0,0,0,0.25)
                 border.width:   1
             }
@@ -700,6 +687,8 @@ Item {
         id: radiusDragHandleComponent
 
         MapQuickItem {
+            //Mamikon
+            /*
             id:             mapQuickItem
             anchorPoint.x:  dragHandle.width / 2
             anchorPoint.y:  dragHandle.height / 2
@@ -713,6 +702,7 @@ Item {
                 color:      "white"
                 opacity:    interiorOpacity * .90
             }
+            */
         }
     }
 
@@ -720,6 +710,8 @@ Item {
         id: radiusDragAreaComponent
 
         MissionItemIndicatorDrag {
+            //Mamikon
+            /*
             mapControl: _root.mapControl
 
             property real _lastRadius
@@ -735,6 +727,7 @@ Item {
                     _lastRadius = radius
                 }
             }
+            */
         }
     }
 

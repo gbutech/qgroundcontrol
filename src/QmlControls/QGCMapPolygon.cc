@@ -19,6 +19,7 @@
 
 #include <thread>
 #include <QtConcurrent>
+#include <qmainwindow.h>
 
 QGCMapPolygon::QGCMapPolygon(QObject* parent)
     : QObject               (parent)
@@ -71,28 +72,28 @@ public:
         return _endPos;
     }
 
-    QGeoCoordinate getFirstPathPos(int i)
+    QGeoCoordinate getTestPathPos(int i)
     {
-        assert(i >=0 && i < _firstPath.size());
-        return _firstPath[i];
+        assert(i >=0 && i < _testPath.size());
+        return _testPath[i];
     }
 
-    int getFirstPathSize() const
+    int getTestPathSize() const
     {
-        return _firstPath.size();
+        return _testPath.size();
     }
 
-    void generateFirstPath(int size)
+    void generateTestPath(int size)
     {
         QGeoCoordinate pos = _startPos;
-        _firstPath.push_back(pos);
+        _testPath.push_back(pos);
         double delta = 0.0001;
         for (int i = 0; i < size; ++i)
         {
             pos.setLatitude(pos.latitude() + delta);
             pos.setLongitude(pos.longitude() + delta);
 
-            _firstPath.push_back(pos);
+            _testPath.push_back(pos);
         }
     }
 
@@ -101,20 +102,44 @@ private:
     QGeoCoordinate _startPos;
     QGeoCoordinate _endPos;
 
-    QList<QGeoCoordinate> _firstPath;
+    QList<QGeoCoordinate> _testPath;
 } sim;
 
+int i = 0;
 void QGCMapPolygon::startSpherical()
 {
     sim.setStartPosition(40.1553366, 44.5094613);
-    sim.generateFirstPath(10);
-    QTimer::singleShot(1000, [&]() {
-        for (int i = 0; i < sim.getFirstPathSize(); ++i)
+    sim.generateTestPath(10);
+
+    QTimer* timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, [=]() mutable {
+        if (i == sim.getTestPathSize())
         {
-            appendVertex(sim.getFirstPathPos(i));
+            timer->stop();
+            timer->deleteLater();
+            i = 0;
         }
-        qDebug() << "ON timer ";
+        appendVertex(sim.getTestPathPos(i++));
+
+        qDebug() << "ON timer 1";
     });
+
+    timer->start(1000); // Set interval to 1 second
+
+    //QTimer::singleShot(1000, [&]() {
+    /*auto res = QtConcurrent::run([&](){
+
+        for (int i = 0; i < sim.getTestPathSize(); ++i)
+        {
+            QMetaObject::invokeMethod(this, [=]() {
+
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+                appendVertex(sim.getTestPathPos(i));
+
+                qDebug() << "ON timer 2";
+            });
+        }
+    });*/
 }
 
 void QGCMapPolygon::_init(void)

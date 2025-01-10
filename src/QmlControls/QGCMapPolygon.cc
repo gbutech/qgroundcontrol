@@ -111,7 +111,7 @@ void QGCMapPolygon::startSpherical()
     sim.setStartPosition(40.1553366, 44.5094613);
     sim.generateTestPath(10);
 
-    QTimer* timer = new QTimer(this);
+    QTimer* timer = new QTimer();
     connect(timer, &QTimer::timeout, this, [=]() mutable {
         if (i == sim.getTestPathSize())
         {

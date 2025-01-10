@@ -33,7 +33,6 @@ class EditPositionDialogController : public QObject
 
 public:
     explicit EditPositionDialogController(QObject *parent = nullptr);
-    ~EditPositionDialogController();
 
     Q_INVOKABLE void initValues();
     Q_INVOKABLE void setFromGeo();

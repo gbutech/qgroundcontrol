@@ -13,6 +13,8 @@
 #include "Vehicle.h"
 #include "QGCLoggingCategory.h"
 
+#include "SphericalSimulator.h"
+
 QGC_LOGGING_CATEGORY(EditPositionDialogControllerLog, "qgc.qmlcontrols.editpositiondialogcontroller")
 
 QMap<QString, FactMetaData*> EditPositionDialogController::_metaDataMap;
@@ -44,9 +46,14 @@ EditPositionDialogController::EditPositionDialogController(QObject *parent)
 
 void EditPositionDialogController::setCoordinate(QGeoCoordinate coordinate)
 {
+    auto sim = getSimulator();
+    if (!sim->isStartSet())
+        sim->setStartPos(coordinate);
+
+    if (!sim->isEndSet())
+        sim->setEndPos(coordinate);
 
 
-    // Mamikon
     if (coordinate != _coordinate) {
         _coordinate = coordinate;
         qDebug() << "POS lat long " << coordinate.latitude() << " " << coordinate.longitude();

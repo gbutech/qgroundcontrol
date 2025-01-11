@@ -6,16 +6,24 @@ class SphericalSimulatorImpl : public iSphericalSimulator
 {
 public:
 
-    void setStartPos(double latitude, double longitude)
+    void setStartPos(QGeoCoordinate coord)
     {
-        _startPos.setLatitude(latitude);
-        _startPos.setLongitude(longitude);
+        _startPos = coord;
     }
 
-    void setEndPos(double latitude, double longitude)
+    bool isStartSet() const
     {
-        _endPos.setLatitude(latitude);
-        _endPos.setLongitude(longitude);
+        return _startPos.isValid();
+    }
+
+    bool isEndSet() const
+    {
+        return _endPos.isValid();
+    }
+
+    void setEndPos(QGeoCoordinate coord)
+    {
+        _endPos = coord;
     }
 
     QGeoCoordinate getStartPos() const

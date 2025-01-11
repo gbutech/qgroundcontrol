@@ -513,7 +513,7 @@ Item {
                 //width:          ScreenTools.defaultFontPixelHeight * 1.5
                 height:         width
                 radius:         width * 0.5
-                color:          Qt.rgba(0,0,1,0.8)
+                color:          Qt.rgba(1,0,0,0.8)
                 border.color:   Qt.rgba(0,0,0,0.25)
                 border.width:   1
             }

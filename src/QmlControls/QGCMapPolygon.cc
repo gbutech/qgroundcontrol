@@ -16,10 +16,7 @@
 #include "KMLDomDocument.h"
 
 #include <QtCore/QLineF>
-
-#include <thread>
-#include <QtConcurrent>
-#include <qmainwindow.h>
+#include "SphericalSimulator.h"
 
 QGCMapPolygon::QGCMapPolygon(QObject* parent)
     : QObject               (parent)
@@ -45,6 +42,7 @@ QGCMapPolygon::QGCMapPolygon(const QGCMapPolygon& other, QObject* parent)
     _init();
 }
 
+/*
 class SphericalSimulator
 {
 public:
@@ -103,23 +101,24 @@ private:
     QGeoCoordinate _endPos;
 
     QList<QGeoCoordinate> _testPath;
-} sim;
+} sim;*/
 
 int i = 0;
 void QGCMapPolygon::startSpherical()
 {
-    sim.setStartPosition(40.1553366, 44.5094613);
-    sim.generateTestPath(10);
+    iSphericalSimulator* sim = getSimulator();
+    sim->setStartPos(40.1553366, 44.5094613);
+    sim->generatePath(10);
 
     QTimer* timer = new QTimer();
     connect(timer, &QTimer::timeout, this, [=]() mutable {
-        if (i == sim.getTestPathSize())
+        if (i == sim->getPosCount())
         {
             timer->stop();
             timer->deleteLater();
             i = 0;
         }
-        appendVertex(sim.getTestPathPos(i++));
+        appendVertex(sim->getCurrentPos(i++));
 
         qDebug() << "ON timer 1";
     });

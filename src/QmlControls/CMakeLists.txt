@@ -58,6 +58,8 @@ qt_add_library(QmlControls STATIC
     ToolStripAction.h
     ToolStripActionList.cc
     ToolStripActionList.h
+    SphericalSimulator.h
+    SphericalSimulator.cc
 )
 
 target_link_libraries(QmlControls

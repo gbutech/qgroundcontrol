@@ -44,6 +44,8 @@ EditPositionDialogController::EditPositionDialogController(QObject *parent)
 
 void EditPositionDialogController::setCoordinate(QGeoCoordinate coordinate)
 {
+
+
     /*
     auto ellipseItem = qgcApp()->getEllipseItem();
     ellipseItem->setFlag(QQuickItem::ItemHasContents, true);
@@ -71,11 +73,11 @@ void EditPositionDialogController::setCoordinate(QGeoCoordinate coordinate)
         }
     }*/
 
-    if (coordinate != _coordinate) {
+    /*if (coordinate != _coordinate) {
         _coordinate = coordinate;
         qDebug() << "POS lat long " << coordinate.latitude() << " " << coordinate.longitude();
         emit coordinateChanged(coordinate);
-    }
+    }*/
 
 }
 

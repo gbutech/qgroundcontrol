@@ -16,10 +16,7 @@
 #include "KMLDomDocument.h"
 
 #include <QtCore/QLineF>
-
-#include <thread>
-#include <QtConcurrent>
-#include <qmainwindow.h>
+#include "SphericalSimulator.h"
 
 QGCMapPolygon::QGCMapPolygon(QObject* parent)
     : QObject               (parent)
@@ -45,101 +42,42 @@ QGCMapPolygon::QGCMapPolygon(const QGCMapPolygon& other, QObject* parent)
     _init();
 }
 
-class SphericalSimulator
-{
-public:
-    SphericalSimulator(QGCMapPolygon* = nullptr) {}
-
-    void setStartPosition(double latitude, double longitude)
-    {
-        _startPos.setLatitude(latitude);
-        _startPos.setLongitude(longitude);
-    }
-
-    void setEndPosition(double latitude, double longitude)
-    {
-        _endPos.setLatitude(latitude);
-        _endPos.setLongitude(longitude);
-    }
-
-    QGeoCoordinate getStartPos()
-    {
-        return _startPos;
-    }
-
-    QGeoCoordinate getEndPos()
-    {
-        return _endPos;
-    }
-
-    QGeoCoordinate getTestPathPos(int i)
-    {
-        assert(i >=0 && i < _testPath.size());
-        return _testPath[i];
-    }
-
-    int getTestPathSize() const
-    {
-        return _testPath.size();
-    }
-
-    void generateTestPath(int size)
-    {
-        QGeoCoordinate pos = _startPos;
-        _testPath.push_back(pos);
-        double delta = 0.0001;
-        for (int i = 0; i < size; ++i)
-        {
-            pos.setLatitude(pos.latitude() + delta);
-            pos.setLongitude(pos.longitude() + delta);
-
-            _testPath.push_back(pos);
-        }
-    }
-
-private:
-
-    QGeoCoordinate _startPos;
-    QGeoCoordinate _endPos;
-
-    QList<QGeoCoordinate> _testPath;
-} sim;
-
 int i = 0;
-void QGCMapPolygon::startSpherical()
+void QGCMapPolygon::srxxRun()
 {
-    sim.setStartPosition(40.1553366, 44.5094613);
-    sim.generateTestPath(10);
+    auto sim = getSimulator();
+    sim->setStartPos(40.1553366, 44.5094613);
+    sim->generatePath(10);
 
     QTimer* timer = new QTimer();
     connect(timer, &QTimer::timeout, this, [=]() mutable {
-        if (i == sim.getTestPathSize())
+        if (i == sim->getPosCount())
         {
             timer->stop();
             timer->deleteLater();
             i = 0;
         }
-        appendVertex(sim.getTestPathPos(i++));
-
-        qDebug() << "ON timer 1";
+        appendVertex(sim->getCurrentPos(i++));
     });
 
-    timer->start(1000); // Set interval to 1 second
+    timer->start(1000);
+}
 
-    //QTimer::singleShot(1000, [&]() {
-    /*auto res = QtConcurrent::run([&](){
+void QGCMapPolygon::srxxPath()
+{
+    auto sim = getSimulator();
 
-        for (int i = 0; i < sim.getTestPathSize(); ++i)
-        {
-            QMetaObject::invokeMethod(this, [=]() {
+}
+void QGCMapPolygon::srxxReset()
+{
+    auto sim = getSimulator();
 
-                std::this_thread::sleep_for(std::chrono::seconds(1));
-                appendVertex(sim.getTestPathPos(i));
+}
 
-                qDebug() << "ON timer 2";
-            });
-        }
-    });*/
+void QGCMapPolygon::srxxApplyPID()
+{
+    auto sim = getSimulator();
+
 }
 
 void QGCMapPolygon::_init(void)

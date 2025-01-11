@@ -44,39 +44,14 @@ EditPositionDialogController::EditPositionDialogController(QObject *parent)
 
 void EditPositionDialogController::setCoordinate(QGeoCoordinate coordinate)
 {
-    /*
-    auto ellipseItem = qgcApp()->getEllipseItem();
-    ellipseItem->setFlag(QQuickItem::ItemHasContents, true);
-    ellipseItem->setProperty("color", "blue");
-    ellipseItem->setProperty("shouldPaint", true);
 
-    PositionSimulator* sim = new PositionSimulator(this);
-    sim->setStartPosition(coordinate.latitude(), coordinate.longitude());
-    sim->generateFirstPath(10);
 
-    QObject *canvasRef = ellipseItem->property("ellipseCanvasRef").value<QObject *>();
-    if (canvasRef) {
-        QQuickItem *canvasItem = qobject_cast<QQuickItem *>(canvasRef);
-        if (canvasItem) {
-            std::thread drawThread([canvasItem, ellipseItem, sim]() {
-                for (int i = 0; i < sim->getFirstPathSize(); ++i) {
-
-                    ellipseItem->addPosition(sim->getFirstPathPos(i));
-                    std::this_thread::sleep_for(std::chrono::seconds(1));
-                    QMetaObject::invokeMethod(canvasItem, "requestPaint");
-                }
-            });
-
-            drawThread.detach();
-        }
-    }*/
-
+    // Mamikon
     if (coordinate != _coordinate) {
         _coordinate = coordinate;
         qDebug() << "POS lat long " << coordinate.latitude() << " " << coordinate.longitude();
         emit coordinateChanged(coordinate);
     }
-
 }
 
 void EditPositionDialogController::initValues()

@@ -50,7 +50,10 @@ public:
     Q_INVOKABLE void removeVertex(int vertexIndex);
     Q_INVOKABLE void appendVertices(const QVariantList& varCoords);
 
-    Q_INVOKABLE void startSpherical();
+    Q_INVOKABLE void srxxPath();
+    Q_INVOKABLE void srxxRun();
+    Q_INVOKABLE void srxxReset();
+    Q_INVOKABLE void srxxApplyPID();
 
     void appendVertices(const QList<QGeoCoordinate>& coordinates);
 

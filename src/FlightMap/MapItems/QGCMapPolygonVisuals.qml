@@ -125,9 +125,21 @@ Item {
         mapPolygon.endReset()
         _circleMode = false
     }
-    function _myOwnPolygon() {
-        mapPolygon.startSpherical();
+    function _PIDPolygon() {
+        mapPolygon.srxxApplyPID();
         _circleMode = false
+    }
+    function _restartPolygon() {
+        mapPolygon.srxxReset();
+        _circleMode = false
+    }
+    function _runPolygon() {
+        mapPolygon.srxxRun();
+        _circleMode = false
+    }
+    function _pathPolygon() {
+        mapPolygon.srxxPath();
+        _circleMode = false 
     }
     function _createCircularPolygon(center, radius) {
         //Mamikon
@@ -609,13 +621,33 @@ Item {
             anchors.horizontalCenterOffset: mapControl.centerViewport.left + (mapControl.centerViewport.width / 2)
             y:                              mapControl.centerViewport.top
             availableWidth:                 mapControl.centerViewport.width
-
-           // myown button
+            
             QGCButton {
                 _horizontalPadding: 0
-                text:               qsTr("Spherical")
+                text:               qsTr("PID")
                 visible:            true
-                onClicked:          _myOwnPolygon()
+                onClicked:          _PIDPolygon()
+            }
+
+            QGCButton {
+                _horizontalPadding: 0
+                text:               qsTr("Reset")
+                visible:            true
+                onClicked:          _restartPolygon()
+            }
+
+            QGCButton {
+                _horizontalPadding: 0
+                text:               qsTr("Run")
+                visible:            true
+                onClicked:          _runPolygon()
+            }
+
+            QGCButton {
+                _horizontalPadding: 0
+                text:               qsTr("Path")
+                visible:            true
+                onClicked:          _pathPolygon()
             }
 
             QGCButton {

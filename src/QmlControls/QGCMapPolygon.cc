@@ -47,7 +47,7 @@ void QGCMapPolygon::srxxRun()
 {
     auto sim = getSimulator();
     sim->setStartPos(QGeoCoordinate(40.1553366, 44.5094613));
-    sim->generatePath(10);
+    sim->generatePath(1);
 
     QTimer* timer = new QTimer();
     connect(timer, &QTimer::timeout, this, [=]() mutable {
@@ -66,12 +66,14 @@ void QGCMapPolygon::srxxRun()
 void QGCMapPolygon::srxxPath()
 {
     auto sim = getSimulator();
+    //TODO
 
 }
 void QGCMapPolygon::srxxReset()
 {
     auto sim = getSimulator();
-    _polygonModel.clear();
+    //TODO
+
 }
 
 void QGCMapPolygon::srxxApplyPID()

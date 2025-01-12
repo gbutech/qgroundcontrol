@@ -14,6 +14,7 @@ public:
     virtual void generatePath(int size) = 0;
     virtual bool isStartSet() const = 0;
     virtual bool isEndSet() const = 0;
+    virtual void clearPath() = 0;
 };
 
 iSphericalSimulator* getSimulator();

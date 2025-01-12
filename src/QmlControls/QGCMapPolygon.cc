@@ -78,6 +78,7 @@ void QGCMapPolygon::srxxPath()
 void QGCMapPolygon::srxxReset()
 {
     auto sim = getSimulator();
+    sim->clearPath();
     //TODO
 
 }

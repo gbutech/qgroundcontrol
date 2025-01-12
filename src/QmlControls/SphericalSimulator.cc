@@ -55,6 +55,11 @@ public:
         //generateLine(size);
     }
 
+    void clearPath()
+    {
+        _path.clear();
+    }
+
 private:
 
     void generateSinusoid(int numPoints, double amplitude, double frequency)

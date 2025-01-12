@@ -50,9 +50,7 @@ void EditPositionDialogController::setCoordinate(QGeoCoordinate coordinate)
     if (!sim->isStartSet())
         sim->setStartPos(coordinate);
 
-    if (!sim->isEndSet())
-        sim->setEndPos(coordinate);
-
+    sim->setEndPos(coordinate);
 
     if (coordinate != _coordinate) {
         _coordinate = coordinate;

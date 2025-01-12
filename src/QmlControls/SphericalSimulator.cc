@@ -50,8 +50,8 @@ public:
     void generatePath(int size)
     {
         QGeoCoordinate pos = _startPos;
-        _path.push_back(pos);
         double delta = 0.0001;
+
         for (int i = 0; i < size; ++i)
         {
             pos.setLatitude(pos.latitude() + delta);

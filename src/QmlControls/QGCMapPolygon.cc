@@ -69,10 +69,9 @@ void QGCMapPolygon::srxxPath()
     if (sim->getPosCount() == 0)
     {
         sim->setStartPos(QGeoCoordinate(40.1553366, 44.5094613));
-        sim->generatePath(1);
 
-        appendVertex(sim->getCurrentPos(0));
-        appendVertex(sim->getCurrentPos(1));
+        appendVertex(sim->getStartPos());
+        appendVertex(QGeoCoordinate(40.1554366, 44.5095613));
     }
 }
 

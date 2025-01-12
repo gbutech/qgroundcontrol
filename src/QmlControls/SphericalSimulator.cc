@@ -1,4 +1,6 @@
 #include <QList>
+#include <QGeoPositionInfo>
+#include <cmath>
 
 #include "SphericalSimulator.h"
 
@@ -49,19 +51,47 @@ public:
 
     void generatePath(int size)
     {
-        QGeoCoordinate pos = _startPos;
-        double delta = 0.0001;
-
-        for (int i = 0; i < size; ++i)
-        {
-            pos.setLatitude(pos.latitude() + delta);
-            pos.setLongitude(pos.longitude() + delta);
-
-            _path.push_back(pos);
-        }
+        generateSinusoid(size, 20, 4);
+        //generateLine(size);
     }
 
 private:
+
+    void generateSinusoid(int numPoints, double amplitude, double frequency)
+    {
+        double totalDistance = _startPos.distanceTo(_endPos);
+        double azimuth = _startPos.azimuthTo(_endPos);
+
+        double perpendicularAzimuth = azimuth + 90.0;
+        double stepDistance = totalDistance / (numPoints - 1);
+
+        for (int i = 0; i < numPoints; ++i)
+        {
+            double distance = i * stepDistance;
+
+            double offset = amplitude * std::sin(2.0 * M_PI * frequency * (distance / totalDistance));
+            QGeoCoordinate basePoint = _startPos.atDistanceAndAzimuth(distance, azimuth);
+
+            QGeoCoordinate offsetPoint = basePoint.atDistanceAndAzimuth(std::abs(offset),
+                                offset >= 0 ? perpendicularAzimuth : perpendicularAzimuth + 180.0);
+
+            _path.append(offsetPoint);
+        }
+    }
+
+    void generateLine(int numPoints)
+    {
+        double totalDistance = _startPos.distanceTo(_endPos);
+        double azimuth = _startPos.azimuthTo(_endPos);
+        double stepDistance = totalDistance / (numPoints - 1);
+
+        for (int i = 0; i < numPoints; ++i) {
+            double distance = i * stepDistance;
+            QGeoCoordinate point = _startPos.atDistanceAndAzimuth(distance, azimuth);
+
+            _path.append(point);
+        }
+    }
 
     QGeoCoordinate _startPos;
     QGeoCoordinate _endPos;

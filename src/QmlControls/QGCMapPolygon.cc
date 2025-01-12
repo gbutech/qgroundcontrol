@@ -46,7 +46,7 @@ int i = 0;
 void QGCMapPolygon::srxxRun()
 {
     auto sim = getSimulator();
-    sim->generatePath(10);
+    sim->generatePath(30);
 
     QTimer* timer = new QTimer();
     connect(timer, &QTimer::timeout, this, [=]() mutable {
@@ -59,7 +59,7 @@ void QGCMapPolygon::srxxRun()
         appendVertex(sim->getCurrentPos(i++));
     });
 
-    timer->start(1000);
+    timer->start(500);
 }
 
 void QGCMapPolygon::srxxPath()

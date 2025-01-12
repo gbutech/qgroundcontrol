@@ -127,11 +127,6 @@ Item {
         mapPolygon.endReset()
         _circleMode = false
     }
-    //Davit
-    // function _changeItemColor() {
-    //     dragHandle.color = Qt.rgba(0,0,1,0.8)
-    //     _circleMode = false
-    // }
     function _PIDPolygon() {
         mapPolygon.srxxApplyPID();
         _circleMode = false
@@ -499,7 +494,6 @@ Item {
 
     Component {
         id: dragHandleComponent
-       // property var missionItemColor : Qt.rgba(0,0,1,0.8)
 
         MapQuickItem {
             id:             mapQuickItem
@@ -509,11 +503,7 @@ Item {
             visible:        !_circleMode
 
             property int polygonVertex
-           // property var missionItemColor : Qt.rgba(0,0,1,0.8)
-            // property function changeItemColor: function(newColor) {
-            //             dragHandle.color = newColor;
-            // }
-            // property var missionItemColor : Qt.rgba(0,0,1,0.8)
+           
 
             sourceItem: Rectangle {
                 id:             dragHandle
@@ -522,13 +512,11 @@ Item {
                 //width:          ScreenTools.defaultFontPixelHeight * 1.5
                 height:         width
                 radius:         width * 0.5
+                //Davit
                 color:          missionItemColor// Qt.rgba(0,0,1,0.8)
                 border.color:   Qt.rgba(0,0,0,0.25)
                 border.width:   1
             }
-            // function _changeItemColor(newColor) {
-            // dragHandle.color = newColor;
-        
 
         }
     }
@@ -658,26 +646,13 @@ Item {
                 text:               qsTr("Reset")
                 visible:            true
                 onClicked:          _restartPolygon()
-            }
-
-            // QGCButton {
-            //     _horizontalPadding: 0
-            //     text:               qsTr("Run")
-            //     visible:            true
-            //     enabled: !buttonPressed 
-            //     onClicked: {
-            //         _runPolygon()
-            //         buttonPressed = true;
-            //     }
-            // }      
+            }      
              QGCButton {
                 _horizontalPadding: 0
                 text:               qsTr("Run")
                 visible:            true
-                enabled: !buttonPressed 
                 onClicked: {
                     _runPolygon()
-                    buttonPressed = true;
                 }
             }               
 
@@ -685,7 +660,12 @@ Item {
                 _horizontalPadding: 0
                 text:               qsTr("Path")
                 visible:            true
-                onClicked:          _pathPolygon()
+                enabled: !buttonPressed 
+                onClicked:         {
+                    _pathPolygon()
+                    buttonPressed = true;
+
+                } 
             }
           
 

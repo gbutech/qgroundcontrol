@@ -47,6 +47,8 @@ Item {
     property real _zorderDragHandle:    QGroundControl.zOrderMapItems + 3   // Highest to prevent splitting when items overlap
     property real _zorderSplitHandle:   QGroundControl.zOrderMapItems + 2
     property real _zorderCenterHandle:  QGroundControl.zOrderMapItems + 1   // Lowest such that drag or split takes precedence
+    //Davit
+    property var missionItemColor : Qt.rgba(0,0,1,0.8)
 
     readonly property string _polygonToolsText: qsTr("Polygon Tools")
     readonly property string _traceText:        qsTr("Click in the map to add vertices. Click 'Done Tracing' when finished.")
@@ -125,6 +127,11 @@ Item {
         mapPolygon.endReset()
         _circleMode = false
     }
+    //Davit
+    // function _changeItemColor() {
+    //     dragHandle.color = Qt.rgba(0,0,1,0.8)
+    //     _circleMode = false
+    // }
     function _PIDPolygon() {
         mapPolygon.srxxApplyPID();
         _circleMode = false
@@ -159,10 +166,6 @@ Item {
         mapPolygon.endReset()
         _circleMode = true
         */
-    }
-
-    function _myOwnresetCircle() {
-        
     }
 
     /// Reset polygon to a circle which fits within initial polygon
@@ -496,6 +499,7 @@ Item {
 
     Component {
         id: dragHandleComponent
+       // property var missionItemColor : Qt.rgba(0,0,1,0.8)
 
         MapQuickItem {
             id:             mapQuickItem
@@ -505,6 +509,11 @@ Item {
             visible:        !_circleMode
 
             property int polygonVertex
+           // property var missionItemColor : Qt.rgba(0,0,1,0.8)
+            // property function changeItemColor: function(newColor) {
+            //             dragHandle.color = newColor;
+            // }
+            // property var missionItemColor : Qt.rgba(0,0,1,0.8)
 
             sourceItem: Rectangle {
                 id:             dragHandle
@@ -513,10 +522,14 @@ Item {
                 //width:          ScreenTools.defaultFontPixelHeight * 1.5
                 height:         width
                 radius:         width * 0.5
-                color:          Qt.rgba(1,0,0,0.8)
+                color:          missionItemColor// Qt.rgba(0,0,1,0.8)
                 border.color:   Qt.rgba(0,0,0,0.25)
                 border.width:   1
             }
+            // function _changeItemColor(newColor) {
+            // dragHandle.color = newColor;
+        
+
         }
     }
 
@@ -622,6 +635,17 @@ Item {
             y:                              mapControl.centerViewport.top
             availableWidth:                 mapControl.centerViewport.width
             
+            property bool buttonPressed: false
+
+            QGCButton {
+                _horizontalPadding: 0
+                text:               qsTr("Change Color")
+                visible:            true
+                onClicked: {
+                    //mapQuickItem.changeItemColor(Qt.rgba(1, 0, 0, 0.8));
+                    _root.missionItemColor = "red"//Qt.rgba(1,0,0,0.8)
+                }
+            }
             QGCButton {
                 _horizontalPadding: 0
                 text:               qsTr("PID")
@@ -636,12 +660,26 @@ Item {
                 onClicked:          _restartPolygon()
             }
 
-            QGCButton {
+            // QGCButton {
+            //     _horizontalPadding: 0
+            //     text:               qsTr("Run")
+            //     visible:            true
+            //     enabled: !buttonPressed 
+            //     onClicked: {
+            //         _runPolygon()
+            //         buttonPressed = true;
+            //     }
+            // }      
+             QGCButton {
                 _horizontalPadding: 0
                 text:               qsTr("Run")
                 visible:            true
-                onClicked:          _runPolygon()
-            }
+                enabled: !buttonPressed 
+                onClicked: {
+                    _runPolygon()
+                    buttonPressed = true;
+                }
+            }               
 
             QGCButton {
                 _horizontalPadding: 0
@@ -649,6 +687,7 @@ Item {
                 visible:            true
                 onClicked:          _pathPolygon()
             }
+          
 
             QGCButton {
                 _horizontalPadding: 0

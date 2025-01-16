@@ -17,6 +17,7 @@
 
 #include <QtCore/QLineF>
 #include "SphericalSimulator.h"
+#include "srxxRadioModem.h"
 
 QGCMapPolygon::QGCMapPolygon(QObject* parent)
     : QObject               (parent)
@@ -73,13 +74,13 @@ void QGCMapPolygon::srxxPath()
         appendVertex(sim->getStartPos());
         appendVertex(QGeoCoordinate(40.1554366, 44.5095613));
     }
+    srxxSetSerialDeviceName("xxx");
 }
 
 void QGCMapPolygon::srxxReset()
 {
     auto sim = getSimulator();
     sim->clearPath();
-    //TODO
 
 }
 
@@ -88,6 +89,13 @@ void QGCMapPolygon::srxxApplyPID()
     auto sim = getSimulator();
 
 }
+
+void QGCMapPolygon::srxxSetSerialDeviceName(std::string tty)
+{
+    auto modem = getRadioModem();
+    modem->setSerialDeviceName(tty);
+}
+
 
 void QGCMapPolygon::_init(void)
 {

@@ -62,6 +62,8 @@ qt_add_library(QmlControls STATIC
     SphericalSimulator.cc
     SphericalSimulatorSima.cc
     SphericalSimulatorDavit.cc
+    srxxRadioModem.h
+    srxxRadioModem.cc
 )
 
 target_link_libraries(QmlControls

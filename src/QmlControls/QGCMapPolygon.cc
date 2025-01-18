@@ -90,12 +90,11 @@ void QGCMapPolygon::srxxApplyPID()
 
 }
 
-void QGCMapPolygon::srxxSetSerialDeviceName(std::string tty)
+void QGCMapPolygon::srxxSetSerialDeviceName(const QString& tty)
 {
     auto modem = getRadioModem();
-    modem->setSerialDeviceName(tty);
+    modem->setSerialDeviceName(tty.toStdString());
 }
-
 
 void QGCMapPolygon::_init(void)
 {

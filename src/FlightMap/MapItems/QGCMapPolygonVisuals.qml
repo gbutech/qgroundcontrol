@@ -667,7 +667,23 @@ Item {
 
                 } 
             }
-          
+
+            TextField {
+                id: editBox
+                placeholderText: "Enter tty"
+                width: 100
+                font.pixelSize: 16
+            }
+
+            QGCButton {
+                _horizontalPadding: 0
+                text:               qsTr("Set TTY")
+                visible:            true
+                onClicked:         {
+                    mapPolygon.srxxSetSerialDeviceName(editBox.text);
+                } 
+            }
+
 
             QGCButton {
                 _horizontalPadding: 0

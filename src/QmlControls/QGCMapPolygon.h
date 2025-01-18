@@ -54,7 +54,7 @@ public:
     Q_INVOKABLE void srxxRun();
     Q_INVOKABLE void srxxReset();
     Q_INVOKABLE void srxxApplyPID();
-    Q_INVOKABLE void srxxSetSerialDeviceName(std::string tty);
+    Q_INVOKABLE void srxxSetSerialDeviceName(const QString& tty);
 
     void appendVertices(const QList<QGeoCoordinate>& coordinates);
 
